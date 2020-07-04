@@ -45,7 +45,7 @@ decorator==4.4.2
 defusedxml==0.6.0
 diff-match-patch==20181111
 distributed @ file:///tmp/build/80754af9/distributed_1592842468712/work
-Django==2.2.5
+Django==2.2.13
 docutils==0.16
 entrypoints==0.3
 et-xmlfile==1.0.1
