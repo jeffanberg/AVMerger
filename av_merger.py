@@ -33,6 +33,7 @@ def photo_list():
             print(photo_file)
             yield photo_file
 
+
 def avMerge(song, photo):
     video = mpy.ImageClip(f"{photo}")
     audio = mpy.AudioFileClip(f"{song}")
@@ -43,10 +44,13 @@ def avMerge(song, photo):
     video.write_videofile(str(pathlib.PurePath(str(save_dir), str(song.stem))) + ".mp4", fps=24)
 
 
+# set up generator for the photos
+gen = photo_list()
+
 # loop through music folder
 for music_file in music_dir.iterdir():
     print(music_file)
     mFilePath = pathlib.Path(music_file)
     if mFilePath.suffix == '.mp3':
-        avMerge(music_file, next(photo_list()))
+        avMerge(music_file, next(gen))
 
