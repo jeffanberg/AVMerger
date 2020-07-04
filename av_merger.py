@@ -2,17 +2,20 @@ import sys
 import pathlib
 import moviepy.editor as mpy
 
-# grab the arguments
+#Initialize fade in and out lengths in seconds. Adjust these to preference.
+fadein_dur = 2
+fadeout_dur = 2
+
+# grab and initialize the argument directories
 first_arg = sys.argv[1]
 second_arg = sys.argv[2]
 third_arg = sys.argv[3]
 
-
-# check if new/ exists, if not create
 music_dir = pathlib.Path(first_arg)
 photo_dir = pathlib.Path(second_arg)
 save_dir = pathlib.Path(third_arg)
 
+# check if save / exists, if not create; throw errors if photo or song dirs don't exist
 if save_dir.exists() is False:
     save_dir.mkdir()
 
@@ -30,23 +33,20 @@ def photo_list():
             print(photo_file)
             yield photo_file
 
-def avMerge(song, photo, num):
+def avMerge(song, photo):
     video = mpy.ImageClip(f"{photo}")
     audio = mpy.AudioFileClip(f"{song}")
-    video = video.set_audio(audio)
-    video = video.set_duration(audio.duration)
-    print("Video duration is" + str(video.duration))
-    print(audio.duration)
-    video.write_videofile("songfile" + str(num) + ".mp4", fps=24)
+    video = (video.set_audio(audio)
+            .set_duration(audio.duration)
+            .fadein(fadein_dur)
+            .fadeout(fadeout_dur))
+    video.write_videofile(str(pathlib.PurePath(str(save_dir), str(song.stem))) + ".mp4", fps=24)
 
 
 # loop through music folder
-num=0
-
 for music_file in music_dir.iterdir():
     print(music_file)
     mFilePath = pathlib.Path(music_file)
     if mFilePath.suffix == '.mp3':
-        avMerge(music_file, next(photo_list()), num)
-        num += 1
+        avMerge(music_file, next(photo_list()))
 
