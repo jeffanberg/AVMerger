@@ -1,6 +1,5 @@
 import sys
 import pathlib
-from PIL import Image
 from moviepy.editor import *
 
 # grab the arguments
@@ -30,18 +29,22 @@ def photo_list():
         if pFile.suffixes == '.jpg' or '.png' or '.gif':
             yield pFile
 
-def avMerge(music_file, photo_file):
+def avMerge(music_file, photo_file, num):
     video = ImageClip(photo_file)
     audio = AudioClip(music_file)
     video.set_audio(audio)
+    video.write_videofile("songfile" + num + ".mp4")
 
 
 # loop through music folder
+num=0
+
 for music_file in music_dir.iterdir():
     mFile = pathlib.Path(music_file)
     if mFile.suffix == '.mp3':
         try:
-            avMerge(mFile, photo_list())
+            avMerge(mFile, photo_list(), num)
+            num += 1
         except:
             print('Something went wrong.')
 
